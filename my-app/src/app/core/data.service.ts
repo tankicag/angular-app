@@ -1,53 +1,79 @@
 import { Injectable } from '@angular/core';
+
 import { HttpClient } from '@angular/common/http';
+
+import { Observable, throwError } from 'rxjs';
 
 import { map, catchError } from 'rxjs/operators';
 
 import { ICustomer, IOrder } from '../../app/shared/interfaces';
-import { Observable } from 'rxjs';
 
-@Injectable()
+@Injectable() 
 export class DataService {
-  baseUrl: string = 'assets/';
+  // Use the following properties if running the Docker containers via Docker Compose
+
+  // customersUrl = 'http://localhost:3000/api/customers';
+
+  // ordersUrl = 'http://localhost:3000/api/orders';
+
+  // Use the following properties if running the app stand-alone with no external dependencies
+
+  customersUrl = 'assets/customers.json';
+
+  ordersUrl = 'assets/orders.json';
 
   constructor(private http: HttpClient) {}
 
   getCustomers(): Observable<ICustomer[]> {
     return this.http
-      .get<ICustomer[]>(this.baseUrl + 'customers.json')
+      .get<ICustomer[]>(this.customersUrl)
+
       .pipe(catchError(this.handleError));
   }
 
-  getCustomer(id: number): Observable<ICustomer[]> {
-    return this.http.get<ICustomer[]>(this.baseUrl + 'customers.json').pipe(
-      map((customers) => {
-        let customer = customers.filter((cust: ICustomer) => cust.id === id);
-        return customer && customer.length ? customer[0] : null;
-      }),
-      catchError(this.handleError)
-    );
+  getCustomer(id: number): Observable<ICustomer | null> {
+    return this.http
+      .get<ICustomer[]>(this.customersUrl)
+
+      .pipe(
+        map((customers) => {
+          const customer = customers.filter(
+            (cust: ICustomer) => cust.id === id
+          );
+
+          return customer && customer.length ? customer[0] : null;
+        }),
+
+        catchError(this.handleError)
+      );
   }
 
   getOrders(id: number): Observable<IOrder[]> {
-    return this.http.get<IOrder[]>(this.baseUrl + 'orders.json').pipe(
-      map((orders) => {
-        let custOrders = orders.filter(
-          (order: IOrder) => order.customerId === id
-        );
-        return custOrders;
-      }),
-      catchError(this.handleError)
-    );
+    return this.http
+      .get<IOrder[]>(this.ordersUrl)
+
+      .pipe(
+        map((orders) => {
+          const custOrders = orders.filter(
+            (order: IOrder) => order.customerId === id
+          );
+
+          return custOrders;
+        }),
+
+        catchError(this.handleError)
+      );
   }
 
   private handleError(error: any) {
     console.error('server error:', error);
+
     if (error.error instanceof Error) {
       const errMessage = error.error.message;
-      return Observable.throw(errMessage);
-      // Use the following instead if using lite-server
-      // return Observable.throw(err.text() || 'backend server error');
+
+      return throwError(() => new Error(errMessage));
     }
-    return Observable.throw(error || 'Node.js server error');
+
+    return throwError(() => error || new Error('Server error'));
   }
 }

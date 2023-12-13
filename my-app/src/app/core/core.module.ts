@@ -8,4 +8,5 @@ import { SorterService } from './sorter.service';
   imports: [HttpClientModule],
   providers: [DataService, SorterService],
 })
+
 export class CoreModule {}

@@ -9,9 +9,10 @@ import { ICustomer, IOrder, IOrderItem } from '../shared/interfaces';
   templateUrl: './orders.component.html',
   styleUrls: ['./orders.component.css'],
 })
+
 export class OrdersComponent implements OnInit {
   orders: IOrder[] = [];
-  customer: ICustomer;
+  customer: ICustomer | null = null;
 
   constructor(
     private dataService: DataService,
@@ -19,12 +20,11 @@ export class OrdersComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    let id = Number(this.route.snapshot.paramMap.get('id'));
+    const id = Number(this.route.snapshot.paramMap.get('id'));
     this.dataService.getOrders(id).subscribe((orders: IOrder[]) => {
       this.orders = orders;
     });
-
-    this.dataService.getCustomer(id).subscribe((customer: ICustomer) => {
+    this.dataService.getCustomer(id).subscribe((customer: ICustomer | null) => {
       this.customer = customer;
     });
   }
