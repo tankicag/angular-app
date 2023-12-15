@@ -2,18 +2,18 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class SorterService {
-  property: string;
-  direction: number = 1;
+  property = '';
+  direction = 1;
 
   sort(collection: any[], prop: any) {
     this.property = prop;
-    this.direction = this.property === prop ? this.direction * -1 : 1;
+    this.direction = this.direction * -1;
 
     collection.sort((a: any, b: any) => {
       let aVal: any;
       let bVal: any;
 
-      //Handle resolving complex properties such as 'state.name' for prop value
+      // Handle resolving complex properties such as 'state.name' for prop value
       if (prop && prop.indexOf('.') > -1) {
         aVal = this.resolveProperty(prop, a);
         bVal = this.resolveProperty(prop, b);
@@ -22,9 +22,13 @@ export class SorterService {
         bVal = b[prop];
       }
 
-      //Fix issues that spaces before/after string value can cause such as ' San Francisco'
-      if (this.isString(aVal)) aVal = aVal.trim().toUpperCase();
-      if (this.isString(bVal)) bVal = bVal.trim().toUpperCase();
+      // Fix issues that spaces before/after string value can cause such as ' San Francisco'
+      if (this.isString(aVal)) {
+        aVal = aVal.trim().toUpperCase();
+      }
+      if (this.isString(bVal)) {
+        bVal = bVal.trim().toUpperCase();
+      }
 
       if (aVal === bVal) {
         return 0;

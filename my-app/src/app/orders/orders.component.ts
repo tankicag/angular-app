@@ -7,17 +7,15 @@ import { ICustomer, IOrder, IOrderItem } from '../shared/interfaces';
 @Component({
   selector: 'app-orders',
   templateUrl: './orders.component.html',
-  styleUrls: ['./orders.component.css'],
+  styleUrls: [ './orders.component.css' ]
 })
-
 export class OrdersComponent implements OnInit {
+
   orders: IOrder[] = [];
   customer: ICustomer | null = null;
 
-  constructor(
-    private dataService: DataService,
-    private route: ActivatedRoute
-  ) {}
+  constructor(private dataService: DataService,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -28,4 +26,6 @@ export class OrdersComponent implements OnInit {
       this.customer = customer;
     });
   }
+
+
 }

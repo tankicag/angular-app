@@ -1,21 +1,21 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'filter-textbox',
+  selector: 'app-filter-textbox',
   template: ` Filter: <input type="text" [(ngModel)]="filter" /> `,
 })
 export class FilterTextboxComponent implements OnInit {
-  private _filter: string;
+  private _filter = '';
   @Input() get filter() {
     return this._filter;
   }
 
   set filter(val: string) {
     this._filter = val;
-    this.chnaged.emit(this.filter); //Raise changed event
+    this.changed.emit(this.filter); // Raise changed event
   }
 
-  @Output() chnaged: EventEmitter<string> = new EventEmitter<string>();
+  @Output() changed: EventEmitter<string> = new EventEmitter<string>();
 
   constructor() {}
 
